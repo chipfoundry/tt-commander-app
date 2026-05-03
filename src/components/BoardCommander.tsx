@@ -110,7 +110,7 @@ export function BoardCommander(props: IBreakoutControlProps) {
           <InteractPanel device={props.device} />
         </Show>
         <Show when={activeTab() === 'pinout'}>
-          <PinoutPanel />
+          <PinoutPanel device={props.device} />
         </Show>
         <Show when={activeTab() === 'repl'}>
           <ReplPanel device={props.device} />

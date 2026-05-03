@@ -7,10 +7,16 @@ import { For } from 'solid-js';
 export interface IAnalogPinoutProps {
   pinout: Record<string, string>;
   analogPins: number[];
+  useLetterLabels: boolean;
 }
+
+const letterLabels = ['C', 'D', 'F', 'G', 'J', 'K', 'X', 'W', 'U', 'T', 'R', 'Q'];
 
 export function AnalogPinoutTable(props: IAnalogPinoutProps) {
   const breakoutPin = (analog: number) => {
+    if (props.useLetterLabels) {
+      return letterLabels[analog] ?? '';
+    }
     return analog < 6 ? 'A' + analog : 'B' + (analog - 6);
   };
 

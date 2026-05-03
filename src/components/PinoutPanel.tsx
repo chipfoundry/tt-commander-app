@@ -9,7 +9,9 @@ import {
 } from '@suid/material';
 import { For, Show, createResource } from 'solid-js';
 import { deviceState } from '~/model/DeviceState';
+import { compareVersions } from '~/model/firmware';
 import { Project, shuttle } from '~/model/shuttle';
+import { TTBoardDevice } from '~/ttcontrol/TTBoardDevice';
 import { AnalogPinoutTable } from './AnalogPinoutTable';
 
 interface ExtraProjectInfo {
@@ -22,7 +24,11 @@ interface ExtraProjectInfo {
 
 const extraProjectInfo = new WeakMap<Project, ExtraProjectInfo>();
 
-export function PinoutPanel() {
+export interface IPinoutPanelProps {
+  device: TTBoardDevice;
+}
+
+export function PinoutPanel(props: IPinoutPanelProps) {
   const selectedProject = () =>
     shuttle.projects.find((p) => p.address === deviceState.selectedDesign);
 
@@ -90,6 +96,7 @@ export function PinoutPanel() {
         <AnalogPinoutTable
           analogPins={projectInfo()?.analog_pins ?? []}
           pinout={projectInfo()?.pinout ?? {}}
+          useLetterLabels={compareVersions(props.device.data.version ?? '0.0.0', '3.0.0') >= 0}
         />
       </Show>
     </Stack>
