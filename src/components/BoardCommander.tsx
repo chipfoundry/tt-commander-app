@@ -17,6 +17,11 @@ export interface IBreakoutControlProps {
 
 type ITabName = 'config' | 'interact' | 'pinout' | 'repl';
 
+const dieVariantByCommit: Record<string, string> = {
+  '7416232b': 'TTP2',
+  ff701baa: 'TTPG',
+};
+
 export function BoardCommander(props: IBreakoutControlProps) {
   const [activeTab, setActiveTab] = createSignal<ITabName>('config');
 
@@ -30,6 +35,10 @@ export function BoardCommander(props: IBreakoutControlProps) {
     if (id?.startsWith('tt') && id.length >= 4) {
       return `https://tinytapeout.com/chips/${id}/`;
     }
+  };
+  const dieVariant = () => {
+    const commit = props.device.data.romCommit;
+    return commit ? dieVariantByCommit[commit] : undefined;
   };
 
   return (
@@ -46,6 +55,7 @@ export function BoardCommander(props: IBreakoutControlProps) {
             <Show when={!shuttleUrl()}>
               <strong>{shuttleId() ?? '<unknown>'}</strong>
             </Show>
+            <Show when={dieVariant()}>{(variant) => <strong> ({variant()})</strong>}</Show>
           </Typography>
           <Typography>
             Firmware: <strong>{props.device.data.version ?? '<unknown>'}</strong>

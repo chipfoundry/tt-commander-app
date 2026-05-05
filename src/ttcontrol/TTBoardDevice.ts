@@ -66,6 +66,7 @@ export class TTBoardDevice extends EventTarget {
       boot: false,
       version: null as string | null,
       shuttle: null as string | null,
+      romCommit: null as string | null,
       logs: [] as ILogEntry[],
       factoryTest: { status: 'idle', message: '' } as IFactoryTestState,
     });
@@ -200,6 +201,10 @@ export class TTBoardDevice extends EventTarget {
       case 'shuttle':
         this.setData('shuttle', value);
         loadShuttle(value);
+        break;
+
+      case 'commit':
+        this.setData('romCommit', value);
         break;
 
       case 'factory_test':
