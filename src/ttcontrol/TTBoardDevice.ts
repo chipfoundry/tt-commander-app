@@ -32,6 +32,13 @@ export interface ILogEntry {
   text: string;
 }
 
+export type FactoryTestStatus = 'idle' | 'running' | 'pass' | 'fail';
+
+export interface IFactoryTestState {
+  status: FactoryTestStatus;
+  message: string;
+}
+
 export type TerminalListener = (data: string) => void;
 
 const MAX_LOG_ENTRIES = 1000;
@@ -60,6 +67,7 @@ export class TTBoardDevice extends EventTarget {
       version: null as string | null,
       shuttle: null as string | null,
       logs: [] as ILogEntry[],
+      factoryTest: { status: 'idle', message: '' } as IFactoryTestState,
     });
     this.data = data;
     this.setData = setData;
@@ -106,6 +114,7 @@ export class TTBoardDevice extends EventTarget {
   }
 
   async factorySetup() {
+    this.setData('factoryTest', { status: 'running', message: '' });
     this.addLogEntry({ text: '<<< factory setup >>>', sent: true });
     await this.sendCommand('run_factory_test()');
   }
@@ -191,6 +200,18 @@ export class TTBoardDevice extends EventTarget {
       case 'shuttle':
         this.setData('shuttle', value);
         loadShuttle(value);
+        break;
+
+      case 'factory_test':
+        if (value === 'OK') {
+          this.setData('factoryTest', { status: 'pass', message: '' });
+        }
+        break;
+
+      case 'error':
+        if (value.startsWith('factory_test_clocking')) {
+          this.setData('factoryTest', { status: 'fail', message: value });
+        }
         break;
     }
   }

@@ -8,6 +8,7 @@ import {
 } from '@suid/icons-material';
 import {
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -184,6 +185,28 @@ export function BoardConfigPanel(props: IBoardConfigPanelProps) {
           >
             Factory Test
           </Button>
+          <Show when={props.device.data.factoryTest.status !== 'idle'}>
+            <Chip
+              label={
+                props.device.data.factoryTest.status === 'running'
+                  ? 'Running...'
+                  : props.device.data.factoryTest.status === 'pass'
+                    ? 'PASS'
+                    : 'FAIL'
+              }
+              title={props.device.data.factoryTest.message}
+              sx={{
+                fontWeight: 'bold',
+                color: '#fff',
+                backgroundColor:
+                  props.device.data.factoryTest.status === 'running'
+                    ? '#9e9e9e'
+                    : props.device.data.factoryTest.status === 'pass'
+                      ? '#2e7d32'
+                      : '#c62828',
+              }}
+            />
+          </Show>
         </Show>
       </Stack>
 

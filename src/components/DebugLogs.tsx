@@ -6,6 +6,17 @@ import { List, ListItem } from '@suid/material';
 import { For, createEffect } from 'solid-js';
 import { ILogEntry } from '~/ttcontrol/TTBoardDevice';
 
+function factoryTestResult(text: string): 'pass' | 'fail' | null {
+  const trimmed = text.trim();
+  if (trimmed === 'factory_test=OK') {
+    return 'pass';
+  }
+  if (trimmed.startsWith('error=factory_test_clocking')) {
+    return 'fail';
+  }
+  return null;
+}
+
 export function DebugLogs(props: { logs: ILogEntry[] }) {
   let listRef: HTMLUListElement | null = null;
 
@@ -30,18 +41,27 @@ export function DebugLogs(props: { logs: ILogEntry[] }) {
       <ListItem sx={{ color: '#ccc' }}>Debug log</ListItem>
       <For
         each={props.logs}
-        children={(logEntry) => (
-          <ListItem
-            sx={{
-              color: logEntry.sent ? '#ccffcc' : '#ffccff',
-              paddingTop: 0,
-              paddingBottom: 0,
-            }}
-          >
-            {logEntry.sent ? '> ' : ''}
-            {logEntry.text}
-          </ListItem>
-        )}
+        children={(logEntry) => {
+          const result = factoryTestResult(logEntry.text);
+          const color = result ? '#fff' : logEntry.sent ? '#ccffcc' : '#ffccff';
+          const background =
+            result === 'pass' ? '#1b5e20' : result === 'fail' ? '#b71c1c' : 'transparent';
+          const fontWeight = result ? 'bold' : 'normal';
+          return (
+            <ListItem
+              sx={{
+                color,
+                background,
+                fontWeight,
+                paddingTop: 0,
+                paddingBottom: 0,
+              }}
+            >
+              {logEntry.sent ? '> ' : ''}
+              {logEntry.text}
+            </ListItem>
+          );
+        }}
       />
     </List>
   );
