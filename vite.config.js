@@ -5,9 +5,11 @@ import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
 
 const commitHash = child.execSync('git rev-parse --short HEAD').toString();
+const basePath = process.env.VITE_BASE_PATH || '/';
 
 export default defineConfig({
   plugins: [suidPlugin(), solidPlugin()],
+  base: basePath,
 
   server: {
     open: true,
