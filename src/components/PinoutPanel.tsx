@@ -10,7 +10,7 @@ import {
 import { For, Show, createResource } from 'solid-js';
 import { deviceState } from '~/model/DeviceState';
 import { compareVersions } from '~/model/firmware';
-import { Project, shuttle } from '~/model/shuttle';
+import { Project, shuttle, shuttleIndexUrl } from '~/model/shuttle';
 import { TTBoardDevice } from '~/ttcontrol/TTBoardDevice';
 import { AnalogPinoutTable } from './AnalogPinoutTable';
 
@@ -43,9 +43,7 @@ export function PinoutPanel(props: IPinoutPanelProps) {
       return cached;
     }
 
-    const response = await fetch(
-      `https://index.tinytapeout.com/${shuttle.id}.json?fields=author,description,pinout,analog_pins&filter=${project.macro}`,
-    );
+    const response = await fetch(shuttleIndexUrl(shuttle.id));
     const json: { projects: ExtraProjectInfo[] } = await response.json();
     const result = json.projects.find((p) => p.macro === project.macro);
     if (result) {

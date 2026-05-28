@@ -30,6 +30,7 @@ jobs:
       - name: Build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_SHUTTLE_INDEX_URL: https://raw.githubusercontent.com/chipfoundry/nydesign-cc2509/main/shuttle_index.json
         run: npm run build
 
       - name: Upload artifact for GitHub Pages
